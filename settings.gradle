@@ -16,4 +16,4 @@
  * File created: 2015-03-08 21:33:50
  */
 
-include ':view-mover'
+include ':viewmover'
