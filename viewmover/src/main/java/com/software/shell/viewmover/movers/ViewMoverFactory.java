@@ -22,7 +22,7 @@ import android.os.Build;
 import android.view.View;
 
 /**
- * View mover factory class, which serves for creating a view mover instances
+ * A factory class, which creates view mover instances
  * depending on the {@code BUILD VERSION}
  *
  * @author shell
@@ -32,7 +32,7 @@ import android.view.View;
 public abstract class ViewMoverFactory {
 
 	/**
-	 * Creates a subclasses of the {@link com.software.shell.viewmover.movers.ViewMover} class
+	 * Creates the subclasses of the {@link com.software.shell.viewmover.movers.ViewMover} class
 	 * depending on the {@code BUILD VERSION}
 	 *
 	 * @param view view to be moved

@@ -48,3 +48,7 @@ android {
 	}
 
 }
+
+dependencies {
+	compile 'com.github.shell-software:uitools:1.0.0'
+}

@@ -19,23 +19,29 @@
 package com.software.shell.viewmover.configuration;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.animation.Interpolator;
-import com.software.shell.viewmover.utils.MetricsConverter;
+import com.software.shell.uitools.convert.DensityConverter;
 
 /**
- * Entity class, which contains the detailed parameters for
- * view movement action
+ * Entity class, which contains such moving parameters like
+ * X-, Y-axis etc.
  *
  * @author shell
  * @version 1.0.0
  * @since 1.0.0
  */
-public class MovingDetails {
+public class MovingParams {
+
+	/**
+	 * Logging tag
+	 */
+	private static final String LOG_TAG = String.format("[view-mover][%s]", MovingParams.class.getSimpleName());
 
 	/**
 	 * Move animation duration, which is used by default
 	 */
-	private static final long DEFAULT_ANIMATION_DURATION = 500;
+	private static final long DEFAULT_ANIMATION_DURATION = 500L;
 
 	/**
 	 * Context the view is running in
@@ -63,17 +69,17 @@ public class MovingDetails {
 	 * <p>
 	 * By default set to {@link #DEFAULT_ANIMATION_DURATION}
 	 */
-	private final long animationDuration;
+	private long animationDuration = DEFAULT_ANIMATION_DURATION;
 
 	/**
 	 * Move animation interpolator
 	 * <p>
 	 * By default is not set and is {@code null}
 	 */
-	private final Interpolator animationInterpolator;
+	private Interpolator animationInterpolator;
 
 	/**
-	 * Creates and instance of the {@link MovingDetails}
+	 * Creates and instance of the {@link MovingParams}
 	 *
 	 * @param context context the view is running in
 	 * @param xAxisDelta X-axis delta in density-independent pixels.
@@ -85,17 +91,20 @@ public class MovingDetails {
 	 * @param animationDuration move animation duration
 	 * @param animationInterpolator move animation interpolator
 	 */
-	public MovingDetails(Context context, float xAxisDelta, float yAxisDelta, long animationDuration,
-	                     Interpolator animationInterpolator) {
+	public MovingParams(Context context, float xAxisDelta, float yAxisDelta, long animationDuration,
+	                    Interpolator animationInterpolator) {
 		this.context = context;
 		this.xAxisDelta = dpToPx(xAxisDelta);
 		this.yAxisDelta = dpToPx(yAxisDelta);
 		this.animationDuration = animationDuration;
 		this.animationInterpolator = animationInterpolator;
+		Log.v(LOG_TAG, String.format("Moving params initialized with values: xAxisDelta = %s, yAxisDelta = %s," +
+				"animationDuration = %s, animation interpolator is an instance of %s", getXAxisDelta(),
+				getYAxisDelta(), getAnimationDuration(), getAnimationInterpolator().getClass().getSimpleName()));
 	}
 
 	/**
-	 * Creates and instance of the {@link MovingDetails}
+	 * Creates and instance of the {@link MovingParams}
 	 *
 	 * @param context context the view is running in
 	 * @param xAxisDelta X-axis delta in density-independent pixels.
@@ -106,12 +115,17 @@ public class MovingDetails {
 	 *                   Negative value means that view is moving up
 	 * @param animationDuration move animation duration
 	 */
-	public MovingDetails(Context context, float xAxisDelta, float yAxisDelta, long animationDuration) {
-		this(context, xAxisDelta, yAxisDelta, animationDuration, null);
+	public MovingParams(Context context, float xAxisDelta, float yAxisDelta, long animationDuration) {
+		this.context = context;
+		this.xAxisDelta = dpToPx(xAxisDelta);
+		this.yAxisDelta = dpToPx(yAxisDelta);
+		this.animationDuration = animationDuration;
+		Log.v(LOG_TAG, String.format("Moving params initialized with values: xAxisDelta = %s, yAxisDelta = %s," +
+						"animationDuration = %s", getXAxisDelta(), getYAxisDelta(), getAnimationDuration()));
 	}
 
 	/**
-	 * Creates and instance of the {@link MovingDetails}
+	 * Creates and instance of the {@link MovingParams}
 	 *
 	 * @param context context the view is running in
 	 * @param xAxisDelta X-axis delta in density-independent pixels.
@@ -121,18 +135,28 @@ public class MovingDetails {
 	 *                   Positive value means that view is moving down.
 	 *                   Negative value means that view is moving up
 	 */
-	public MovingDetails(Context context, float xAxisDelta, float yAxisDelta) {
-		this(context, xAxisDelta, yAxisDelta, DEFAULT_ANIMATION_DURATION, null);
+	public MovingParams(Context context, float xAxisDelta, float yAxisDelta) {
+		this.context = context;
+		this.xAxisDelta = dpToPx(xAxisDelta);
+		this.yAxisDelta = dpToPx(yAxisDelta);
+		Log.v(LOG_TAG, String.format("Moving params initialized with values: xAxisDelta = %s, yAxisDelta = %s,",
+				getXAxisDelta(), getYAxisDelta()));
 	}
 
 	/**
-	 * Creates an instance of the {@link MovingDetails} by cloning it
+	 * Creates an instance of the {@link MovingParams} by cloning it
 	 *
 	 * @param details moving details, which cloning is performed of
 	 */
-	public MovingDetails(MovingDetails details) {
-		this(details.getContext(), details.getXAxisDelta(), details.getYAxisDelta(), details.getAnimationDuration(),
-				details.getAnimationInterpolator());
+	public MovingParams(MovingParams details) {
+		this.context = details.getContext();
+		this.xAxisDelta = details.getXAxisDelta();
+		this.yAxisDelta = details.getYAxisDelta();
+		this.animationDuration = getAnimationDuration();
+		this.animationInterpolator = details.getAnimationInterpolator();
+		Log.v(LOG_TAG, String.format("Cloned moving params initialized with values: xAxisDelta = %s, yAxisDelta = " +
+						"%s, animationDuration = %s, animation interpolator is an instance of %s", getXAxisDelta(),
+				getYAxisDelta(), getAnimationDuration(), getAnimationInterpolator().getClass().getSimpleName()));
 	}
 
 	/**
@@ -160,6 +184,7 @@ public class MovingDetails {
 	 */
 	public void setXAxisDelta(float xAxisDelta) {
 		this.xAxisDelta = dpToPx(xAxisDelta);
+		Log.v(LOG_TAG, "Moving Params xAxisDelta set to: " + getXAxisDelta());
 	}
 
 	/**
@@ -178,6 +203,7 @@ public class MovingDetails {
 	 */
 	public void setYAxisDelta(float yAxisDelta) {
 		this.yAxisDelta = dpToPx(yAxisDelta);
+		Log.v(LOG_TAG, "Moving Params yAxisDelta set to: " + getYAxisDelta());
 	}
 
 	/**
@@ -199,15 +225,13 @@ public class MovingDetails {
 	}
 
 	/**
-	 * Makes a call to
-	 * {@link com.software.shell.viewmover.utils.MetricsConverter#dpToPx(android.content.Context, float)}
-	 * for converting a density-independent value into density-dependent one
+	 * Converts the density-independent value into density-dependent one
 	 *
 	 * @param dp density-independent value
 	 * @return density-dependent value
 	 */
 	private float dpToPx(float dp) {
-		return MetricsConverter.dpToPx(getContext(), dp);
+		return DensityConverter.dpToPx(getContext(), dp);
 	}
 
 }

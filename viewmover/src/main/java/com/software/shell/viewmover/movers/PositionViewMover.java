@@ -26,6 +26,8 @@ import android.view.View;
 /**
  * View mover class, which is used to move the view, based on view's visual position
  * within parent container
+ * <p>
+ * Used for {@code TargetApi} {@link android.os.Build.VERSION_CODES#JELLY_BEAN} and higher
  *
  * @author shell
  * @version 1.0.0
@@ -36,7 +38,7 @@ class PositionViewMover extends ViewMover {
 	/**
 	 * Logging tag
 	 */
-	private static final String LOG_TAG = String.format("[FAB][%s]", PositionViewMover.class.getSimpleName());
+	private static final String LOG_TAG = String.format("[view-mover][%s]", PositionViewMover.class.getSimpleName());
 
 	/**
 	 * Creates an instance of the {@link com.software.shell.viewmover.movers.PositionViewMover}
@@ -56,8 +58,8 @@ class PositionViewMover extends ViewMover {
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@Override
 	void changeViewPosition(float xAxisDelta, float yAxisDelta) {
-		final float endLeftBoundPointX = calculateEndLeftBound(xAxisDelta);
-		final float endTopBoundPointY = calculateEndTopBound(yAxisDelta);
+		float endLeftBoundPointX = calculateEndLeftBound(xAxisDelta);
+		float endTopBoundPointY = calculateEndTopBound(yAxisDelta);
 		getView().setX(endLeftBoundPointX);
 		getView().setY(endTopBoundPointY);
 		Log.v(LOG_TAG, String.format("Updated view position: left x = %s, top y = %s", endLeftBoundPointX,

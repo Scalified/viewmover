@@ -23,7 +23,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import android.view.animation.TranslateAnimation;
-import com.software.shell.viewmover.configuration.MovingDetails;
+import com.software.shell.viewmover.configuration.MovingParams;
 
 /**
  * Abstract class, which contains the base view movement logic
@@ -39,7 +39,7 @@ public abstract class ViewMover {
 	/**
 	 * Logging tag
 	 */
-	private static final String LOG_TAG = String.format("[FAB][%s]", ViewMover.class.getSimpleName());
+	private static final String LOG_TAG = String.format("[view-mover][%s]", ViewMover.class.getSimpleName());
 
 	/**
 	 * {@link android.view.View}, which is to be moved
@@ -102,7 +102,7 @@ public abstract class ViewMover {
 	/**
 	 * Is called when move animation completes
 	 * <p>
-	 * Used to change the view position withing its parent container
+	 * Used to change the view position within its parent container
 	 *
 	 * @param xAxisDelta X-axis delta in actual pixels
 	 * @param yAxisDelta Y-axis delta in actual pixels
@@ -128,17 +128,17 @@ public abstract class ViewMover {
 	}
 
 	/**
-	 * Moves the view based on the {@link com.software.shell.viewmover.configuration.MovingDetails}
+	 * Moves the view based on the {@link MovingParams}
 	 *
-	 * @param details details of the move action
+	 * @param params params of the move action
 	 */
-	public void move(MovingDetails details) {
+	public void move(MovingParams params) {
 		if (isPreviousAnimationCompleted()) {
-			final MovingDetails mDetails = createUpdatedMovingDetails(details);
-			if (isMoveNonZero(mDetails)) {
-				final Animation moveAnimation = createAnimation(mDetails);
+			MovingParams verifiedParams = getVerifiedMovingParams(params);
+			if (isMoveNonZero(verifiedParams)) {
+				final Animation moveAnimation = createAnimation(verifiedParams);
 				Log.v(LOG_TAG, String.format("View is about to be moved at: delta X-axis = %s, delta Y-axis = %s",
-						mDetails.getXAxisDelta(), mDetails.getYAxisDelta()));
+						verifiedParams.getXAxisDelta(), verifiedParams.getYAxisDelta()));
 				view.startAnimation(moveAnimation);
 			}
 		}
@@ -150,8 +150,8 @@ public abstract class ViewMover {
 	 * @return true if previous animation on the view completed, otherwise false
 	 */
 	boolean isPreviousAnimationCompleted() {
-		final Animation previousAnimation = view.getAnimation();
-		final boolean previousAnimationCompleted = previousAnimation == null || previousAnimation.hasEnded();
+		Animation previousAnimation = view.getAnimation();
+		boolean previousAnimationCompleted = previousAnimation == null || previousAnimation.hasEnded();
 		if (!previousAnimationCompleted) {
 			Log.w(LOG_TAG, "Unable to move the view. View is being currently moving");
 		}
@@ -159,14 +159,14 @@ public abstract class ViewMover {
 	}
 
 	/**
-	 * Checks whether X-axis and Y-axis delta of the moving details are not {@code null}
+	 * Checks whether both X-axis and Y-axis delta of the moving details are not {@code zero}
 	 *
 	 * @param details moving details, which needs to be checked
-	 * @return true, if X-axis and Y-axis delta of the moving details are not {@code null},
+	 * @return true, if any of the X-axis or Y-axis delta of the moving details are {@code zero},
 	 *         otherwise false
 	 */
-	boolean isMoveNonZero(MovingDetails details) {
-		final boolean moveNonZero = details.getXAxisDelta() != 0.0f
+	boolean isMoveNonZero(MovingParams details) {
+		boolean moveNonZero = details.getXAxisDelta() != 0.0f
 				|| details.getYAxisDelta() != 0.0f;
 		if (!moveNonZero) {
 			Log.w(LOG_TAG, "Zero movement detected. No movement will be performed");
@@ -175,20 +175,20 @@ public abstract class ViewMover {
 	}
 
 	/**
-	 * Creates an updated copy of the {@link com.software.shell.viewmover.configuration.MovingDetails}
+	 * Creates an updated copy of the {@link MovingParams}
 	 * with X-axis and Y-axis deltas updated based on calculations returned from
-	 * {@link #updateXAxisDelta(com.software.shell.viewmover.configuration.MovingDetails)} and
-	 * {@link #updateYAxisDelta(com.software.shell.viewmover.configuration.MovingDetails)}
+	 * {@link #updateXAxisDelta(MovingParams)} and
+	 * {@link #updateYAxisDelta(MovingParams)}
 	 *
-	 * @param details moving details, which needs to be updated
+	 * @param params moving params, which needs to be updated
 	 */
-	private MovingDetails createUpdatedMovingDetails(final MovingDetails details) {
-		final MovingDetails mDetails = new MovingDetails(details);
-		updateXAxisDelta(mDetails);
-		updateYAxisDelta(mDetails);
+	private MovingParams getVerifiedMovingParams(final MovingParams params) {
+		MovingParams mParams = new MovingParams(params);
+		updateXAxisDelta(mParams);
+		updateYAxisDelta(mParams);
 		Log.v(LOG_TAG, String.format("Updated moving details values: X-axis from %s to %s, Y-axis from %s to %s",
-				details.getXAxisDelta(), mDetails.getXAxisDelta(), details.getYAxisDelta(), mDetails.getYAxisDelta()));
-		return mDetails;
+				params.getXAxisDelta(), mParams.getXAxisDelta(), params.getYAxisDelta(), mParams.getYAxisDelta()));
+		return mParams;
 	}
 
 	/**
@@ -197,7 +197,7 @@ public abstract class ViewMover {
 	 *
 	 * @param details moving details, which X-axis delta needs to be updated in
 	 */
-	private void updateXAxisDelta(MovingDetails details) {
+	private void updateXAxisDelta(MovingParams details) {
 		if (!hasHorizontalSpaceToMove(details.getXAxisDelta())) {
 			Log.w(LOG_TAG, "Unable to move the view horizontally. No horizontal space left to move");
 			details.setXAxisDelta(0.0f);
@@ -210,7 +210,7 @@ public abstract class ViewMover {
 	 *
 	 * @param details moving details, which Y-axis delta needs to be updated in
 	 */
-	private void updateYAxisDelta(MovingDetails details) {
+	private void updateYAxisDelta(MovingParams details) {
 		if (!hasVerticalSpaceToMove(details.getYAxisDelta())) {
 			Log.w(LOG_TAG, "Unable to move the view vertically. No vertical space left to move");
 			details.setYAxisDelta(0.0f);
@@ -222,16 +222,16 @@ public abstract class ViewMover {
 	 * its parent container
 	 * <p>
 	 * Calls {@link #calculateEndLeftBound(float)} and {@link #calculateEndRightBound(float)}
-	 * to calculate the resulting X coordinate of view's left and right bounds
+	 * to calculate the resulting X coordinate of the view's left and right bounds
 	 *
 	 * @param xAxisDelta X-axis delta in actual pixels
 	 * @return true if there is enough space to move the view horizontally, otherwise false
 	 */
 	private boolean hasHorizontalSpaceToMove(float xAxisDelta) {
-		final int parentWidth = getParentView().getWidth();
+		int parentWidth = getParentView().getWidth();
 		Log.v(LOG_TAG, "Parent view width is: " + parentWidth);
-		final int endLeftBound = calculateEndLeftBound(xAxisDelta);
-		final int endRightBound = calculateEndRightBound(xAxisDelta);
+		int endLeftBound = calculateEndLeftBound(xAxisDelta);
+		int endRightBound = calculateEndRightBound(xAxisDelta);
 		Log.v(LOG_TAG, String.format("Calculated end bounds: left = %s, right = %s", endLeftBound, endRightBound));
 		return endLeftBound >= 0 && endRightBound <= parentWidth;
 	}
@@ -241,16 +241,16 @@ public abstract class ViewMover {
 	 * its parent container
 	 * <p>
 	 * Calls {@link #calculateEndTopBound(float)} and {@link #calculateEndBottomBound(float)}
-	 * to calculate the resulting Y coordinate of view's top and bottom bounds
+	 * to calculate the resulting Y coordinate of the view's top and bottom bounds
 	 *
 	 * @param yAxisDelta Y-axis delta in actual pixels
 	 * @return true if there is enough space to move the view vertically, otherwise false
 	 */
 	private boolean hasVerticalSpaceToMove(float yAxisDelta) {
-		final int parentHeight = getParentView().getHeight();
+		int parentHeight = getParentView().getHeight();
 		Log.v(LOG_TAG, "Parent view height is: " + parentHeight);
-		final int endTopBound = calculateEndTopBound(yAxisDelta);
-		final int endBottomBound = calculateEndBottomBound(yAxisDelta);
+		int endTopBound = calculateEndTopBound(yAxisDelta);
+		int endBottomBound = calculateEndBottomBound(yAxisDelta);
 		Log.v(LOG_TAG, String.format("Calculated end bounds: top = %s, bottom = %s", endTopBound, endBottomBound));
 		return endTopBound >= 0 && endBottomBound <= parentHeight;
 	}
@@ -258,21 +258,21 @@ public abstract class ViewMover {
 	/**
 	 * Creates the moving animation
 	 * <p>
-	 * Configures the moving animation based on moving details
+	 * Configures the moving animation based on moving params
 	 *
-	 * @param details details, which is used to configure the moving animation
+	 * @param params params, which is used to configure the moving animation
 	 * @return moving animation
 	 */
-	private Animation createAnimation(MovingDetails details) {
-		final Animation animation = new TranslateAnimation(0, details.getXAxisDelta(), 0, details.getYAxisDelta());
+	private Animation createAnimation(MovingParams params) {
+		Animation animation = new TranslateAnimation(0, params.getXAxisDelta(), 0, params.getYAxisDelta());
 		animation.setFillEnabled(true);
 		animation.setFillBefore(false);
-		animation.setDuration(details.getAnimationDuration());
-		final Interpolator interpolator = details.getAnimationInterpolator();
+		animation.setDuration(params.getAnimationDuration());
+		Interpolator interpolator = params.getAnimationInterpolator();
 		if (interpolator != null) {
 			animation.setInterpolator(interpolator);
 		}
-		animation.setAnimationListener(new MoveAnimationListener(details));
+		animation.setAnimationListener(new MoveAnimationListener(params));
 		return animation;
 	}
 
@@ -287,7 +287,7 @@ public abstract class ViewMover {
 		/**
 		 * Moving details
 		 */
-		private final MovingDetails details;
+		private final MovingParams details;
 
 		/**
 		 * Creates an instance of the
@@ -295,7 +295,7 @@ public abstract class ViewMover {
 		 *
 		 * @param details moving details
 		 */
-		private MoveAnimationListener(MovingDetails details) {
+		private MoveAnimationListener(MovingParams details) {
 			this.details = details;
 		}
 

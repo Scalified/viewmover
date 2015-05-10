@@ -23,8 +23,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * View mover class, which is used to move the view, based on view's margins
+ * View mover class, which is used to move the view, based on the view's margins
  * within parent container
+ * <p>
+ * While moving the view, the actual view margins are changed
+ * <p>
+ * Used for {@code TargetApi} lower than {@link android.os.Build.VERSION_CODES#JELLY_BEAN}
+ * <p>
+ * The mover works as expected with {@link android.widget.FrameLayout} and {@link android.widget.RelativeLayout}.
+ * Working as expected with other layouts not guaranteed
  *
  * @author shell
  * @version 1.0.0
@@ -35,7 +42,7 @@ class MarginViewMover extends ViewMover {
 	/**
 	 * Logging tag
 	 */
-	private static final String LOG_TAG = String.format("[FAB][%s]", MarginViewMover.class.getSimpleName());
+	private static final String LOG_TAG = String.format("[view-mover][%s]", MarginViewMover.class.getSimpleName());
 
 	/**
 	 * Creates an instance of the {@link com.software.shell.viewmover.movers.MarginViewMover}
@@ -54,7 +61,7 @@ class MarginViewMover extends ViewMover {
 	 */
 	@Override
 	void changeViewPosition(float xAxisDelta, float yAxisDelta) {
-		final ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) getView().getLayoutParams();
+		ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) getView().getLayoutParams();
 		if (isViewLeftAligned(layoutParams)) {
 			layoutParams.leftMargin += xAxisDelta;
 		} else {

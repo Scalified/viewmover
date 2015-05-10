@@ -1,30 +1,30 @@
 # View Mover Library for Android
 
+[![Build Status](https://travis-ci.org/shell-software/viewmover.svg?branch=master)](https://travis-ci.org/shell-software/viewmover)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.shell-software/viewmover.svg)](http://search.maven.org/#search|gav|1|g%3A%22com.github.shell-software%22%20AND%20a%3A%22viewmover%22)
-
-## Donation
-
-Donation helps to improve the project development and speed up the release of new versions. I appreciate any contribution
-
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=44CVJBPFRKXJL)
 
 ## Description
 
 The Library allows to move the [**View**](http://developer.android.com/reference/android/view/View.html) within its parent container. While moving, translation animation is used
 
-> For API 16 and higher moving performed based on view's X- and Y-axis position. For other API moving performed based on margins of the parent container
+> For API 16 (Jelly Bean) and higher moving performed based on view's X- and Y-axis position. For other API moving performed based on margins of the parent container
 
 ## Requirements
 
 The Library requires **Android SDK version 9 (Gingerbread)** and higher.
 
+> For API lower than Jelly Bean (version code 16) moving works as expected with **FrameLayout** and **RelativeLayout**. Working as expected with other layouts not guaranteed
+
 ## Gradle Dependency
 
 ```java
 dependencies {
-	compile 'com.github.shell-software:viewmover:0.9.0'
+	compile 'com.github.shell-software:viewmover:1.0.0'
 }
 ```
+
+> **View Mover** has a dependency on an external [**UI Tools**](https://github.com/shell-software/uitools) library. 
+If it is used already in the project it must be excluded as a transitive dependency
 
 ## Activity Stream
 
@@ -38,26 +38,33 @@ dependencies {
 
 **TBD**
 
-## Demo
-
-//TODO
-
 ## Usage
 
-To move the **View** perform the following steps:
+To move the **View** the following steps must be performed:
 	
-  1. Create an instance of the **ViewMover** class passing the **View** object to be moved
-  2. Call the **move(MovingDetails)** method on the created **ViewMover** object passing the **MovingDetails** instance
+  1. Create an instance of the **ViewMover** using **ViewMoverFactory.createInstance(View)** passing the **View** object to be moved
+  2. Create the **MovingParams** instance, passing the necessary moving parameters
+  3. Call the **move(MovingParams)** method on the created **ViewMover** object passing the **MovingParams** instance
 
-### Creation
-
-To create a **ViewMover** object call *public static* method **createInstance(View)** on **ViewMoverFactory**:
+### Example
 
 ```java
+View view;
+// ... view initialization code goes here
+
+// Create ViewMover instance
 ViewMover mover = ViewMoverFactory.createInstance(view);
+
+// Create MovingDetails instance
+MovingParams params = new MovingParams(getContext(), 300.0f, 300.0f);
+
+// Move the view
+mover.move(params);
 ```
 
-**MovingDetails** class contains the details of how the view must be moved:
+### Customization
+
+**MovingParams** class contains the details of how the view must be moved:
 
   * **xAxisDelta** - X-axis delta specifies the horizontal axis distance, which **View** is moving at.
     Positive value means moving right, negative - left.
@@ -67,56 +74,49 @@ ViewMover mover = ViewMoverFactory.createInstance(view);
     Set to **500 ms** by default.
   * **animationInterpolator** - an animation interpolator, which is used to move the view.
     Not set by default.
-	
-**MovingDetails** has several *public* constructors, allowing to create the object with different parameters:
+    
+> X- and Y-axis deltas are stored in **MovingParams** as actual pixels. When **MovingParams** instance created or when 
+setting X- or Y-axis the density-independent values are converted into real ones.
+
+**MovingParams** has several *public* constructors, allowing to create the object with different parameters:
 
 ```java
-// Create parameters
+// Define parameters
 Context context = getContext();
-int rightDistance = 300.0f;
-int downDistance = 300.0f;
+int rightDistance = 200.0f;
+int downDistance = 200.0f;
 long animationDuration = 1000;
 Interpolator animationInterpolator = new AccelerateInterpolator();
 
-// Create MovingDetails object with distances, animation duration and animation interpolator
-MovingDetails firstMovingDetails = new MovingDetails(context, rightDistance, upDistance, animationDuration, animationInterpolator);
+// Declare moving parameters
+MovingParams params;
 
-// Create MovingDetails object with distances and animation duration
-MovingDetails secondMovingDetails = new MovingDetails(context, rightDistance, upDistance, animationDuration);
+// Create MovingParams object with distances, animation duration and animation interpolator
+params = new MovingParams(context, rightDistance, upDistance, animationDuration, animationInterpolator);
 
-// Create MovingDetails object with distances only
-MovingDetails thirdMovingDetails = new MovingDetails(context, rightDistance, upDistance);
+// Create MovingParams object with distances and animation duration
+params = new MovingParams(context, rightDistance, upDistance, animationDuration);
 
-// Clone an existing MovingDetails object
-MovingDetails clonedMovingDetails = new MovingDetails(firstMovingDetails)
+// Create MovingParams object with distances only
+params = new MovingParams(context, rightDistance, upDistance);
+
+// Clone an existing MovingParams object
+MovingParams clonedDetails = new MovingParams(params)
 ```
 
-**MovingDetails** X-axis and Y-axis deltas can be changed after the object is created:
+**MovingParams** X-axis and Y-axis deltas can be changed after the object is created:
 
 ```java
-// Create MovingDetails object with initial parameters
-MovingDetails movingDetails = new MovingDetails(getContext(), 300.0f, 300.0f);
+// Create MovingParams object with initial parameters
+MovingParams params = new MovingParams(getContext(), 200.0f, 200.0f);
 
-// Create new parameters
+// Declare the new parameters
 float xAxisDelta = 100.0f;
 float yAxisDelta = 100.0f;
 
-// Set the new parameters to MovingDetails object
-movingDetails.setXAxisDelta(xAxisDelta);
-movingDetails.setYAxisDelta(yAxisDelta);
-```
-
-To move the view call **public** method **move(MovingDetails)** on **ViewMover** object:
-
-```java
-// Create ViewMover object
-ViewMover mover = ViewMoverFactory.createInstance(view);
-
-// Create MovingDetails object
-MovingDetails movingDetails = new MovingDetails(getContext(), 300.0f, 300.0f);
-
-// Move the view
-mover.move(movingDetails);
+// Apply the new parameters to MovingParams object
+params.setXAxisDelta(xAxisDelta);
+params.setYAxisDelta(yAxisDelta);
 ```
 
 ## License
