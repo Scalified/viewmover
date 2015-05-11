@@ -146,17 +146,18 @@ public class MovingParams {
 	/**
 	 * Creates an instance of the {@link MovingParams} by cloning it
 	 *
-	 * @param details moving details, which cloning is performed of
+	 * @param params moving params, which cloning is performed of
 	 */
-	public MovingParams(MovingParams details) {
-		this.context = details.getContext();
-		this.xAxisDelta = details.getXAxisDelta();
-		this.yAxisDelta = details.getYAxisDelta();
-		this.animationDuration = getAnimationDuration();
-		this.animationInterpolator = details.getAnimationInterpolator();
+	public MovingParams(MovingParams params) {
+		this.context = params.getContext();
+		this.xAxisDelta = params.getXAxisDelta();
+		this.yAxisDelta = params.getYAxisDelta();
+		this.animationDuration = params.getAnimationDuration();
+		this.animationInterpolator = params.getAnimationInterpolator();
 		Log.v(LOG_TAG, String.format("Cloned moving params initialized with values: xAxisDelta = %s, yAxisDelta = " +
 						"%s, animationDuration = %s, animation interpolator is an instance of %s", getXAxisDelta(),
-				getYAxisDelta(), getAnimationDuration(), getAnimationInterpolator().getClass().getSimpleName()));
+				getYAxisDelta(), getAnimationDuration(), getAnimationInterpolator() == null ?
+						"null" : getAnimationInterpolator().getClass().getSimpleName()));
 	}
 
 	/**
