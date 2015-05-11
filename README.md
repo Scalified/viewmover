@@ -19,7 +19,7 @@ The Library requires **Android SDK version 9 (Gingerbread)** and higher.
 
 ```java
 dependencies {
-	compile 'com.github.shell-software:viewmover:1.0.0'
+	compile 'com.github.shell-software:viewmover:1.0.1'
 }
 ```
 
