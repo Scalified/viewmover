@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/shell-software/viewmover.svg?branch=master)](https://travis-ci.org/shell-software/viewmover)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.shell-software/viewmover.svg)](http://search.maven.org/#search|gav|1|g%3A%22com.github.shell-software%22%20AND%20a%3A%22viewmover%22)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-View%20Mover-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1804)
 
 ## Description
 
