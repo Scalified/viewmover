@@ -141,5 +141,5 @@ params.setYAxisDelta(yAxisDelta);
 ## Shell Software Inc. Links
 
 * [Shell Software Inc. Google+ Official Page](https://plus.google.com/112119444427380215269)
-* <a href="mailto:com.software.shell@gmail.com?subject=[ViewMover]: Proposal && Suggestions">Shell Software Inc. Gmail</a>
+* <a href="mailto:com.software.shell@gmail.com?subject=[ViewMover]: Proposals And Suggestions">Shell Software Inc. Gmail</a>
 * [Shell Software Inc. Twitter Official Page](https://twitter.com/shell_software)
