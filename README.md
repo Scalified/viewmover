@@ -33,7 +33,8 @@ If it is used already in the project it must be excluded as a transitive depende
 
 ### 1.1.0 - *current*
 
-1. Changed the standard Android logging API to **SLF4J Logging API**
+1. Fixed movement for **KitKat API** (due to rendering issues in **KitKat**)
+2. Changed the standard Android logging API to **SLF4J Logging API**
 
 ### 1.0.1 - *previous*
 
