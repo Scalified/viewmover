@@ -18,9 +18,10 @@
 
 package com.software.shell.viewmover.movers;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * View mover class, which is used to move the view, based on the view's margins
@@ -40,12 +41,12 @@ import android.view.ViewGroup;
 class MarginViewMover extends ViewMover {
 
 	/**
-	 * Logging tag
+	 * Logger
 	 */
-	private static final String LOG_TAG = String.format("[view-mover][%s]", MarginViewMover.class.getSimpleName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(MarginViewMover.class);
 
 	/**
-	 * Creates an instance of the {@link com.software.shell.viewmover.movers.MarginViewMover}
+	 * Creates the {@link MarginViewMover} instance
 	 *
 	 * @param view view to be moved
 	 */
@@ -72,8 +73,8 @@ class MarginViewMover extends ViewMover {
 		} else {
 			layoutParams.bottomMargin -= yAxisDelta;
 		}
-		Log.v(LOG_TAG, String.format("Updated view margins: left = %s, top = %s, right = %s, bottom = %s",
-				layoutParams.leftMargin, layoutParams.topMargin, layoutParams.rightMargin, layoutParams.bottomMargin));
+		LOGGER.trace("Updated view margins: left = {}, top = {}, right = {}, bottom = {}",
+				layoutParams.leftMargin, layoutParams.topMargin, layoutParams.rightMargin, layoutParams.bottomMargin);
 		getView().setLayoutParams(layoutParams);
 	}
 
@@ -86,7 +87,7 @@ class MarginViewMover extends ViewMover {
 	private boolean isViewLeftAligned(ViewGroup.MarginLayoutParams layoutParams) {
 		final int left =  getView().getLeft();
 		boolean viewLeftAligned = left == 0 || left == layoutParams.leftMargin;
-		Log.v(LOG_TAG, String.format("View is %s aligned", viewLeftAligned ? "LEFT" : "RIGHT"));
+		LOGGER.trace("View is {} aligned", viewLeftAligned ? "LEFT" : "RIGHT");
 		return viewLeftAligned;
 	}
 
@@ -99,7 +100,7 @@ class MarginViewMover extends ViewMover {
 	private boolean isViewTopAligned(ViewGroup.MarginLayoutParams layoutParams) {
 		final int top = getView().getTop();
 		boolean viewTopAligned = top == 0 || top == layoutParams.topMargin;
-		Log.v(LOG_TAG, String.format("View is %s aligned", viewTopAligned ? "TOP" : "BOTTOM"));
+		LOGGER.trace("View is {} aligned", viewTopAligned ? "TOP" : "BOTTOM");
 		return viewTopAligned;
 	}
 

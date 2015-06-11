@@ -20,7 +20,7 @@ The Library requires **Android SDK version 9 (Gingerbread)** and higher.
 
 ```java
 dependencies {
-	compile 'com.github.shell-software:viewmover:1.0.1'
+	compile 'com.github.shell-software:viewmover:1.1.0'
 }
 ```
 
@@ -31,9 +31,13 @@ If it is used already in the project it must be excluded as a transitive depende
 
 [**Full ChangeLog**](https://github.com/shell-software/view-mover/blob/master/CHANGELOG.md)
 
-### 1.0.0 - *current*
+### 1.1.0 - *current*
 
-1. The first release! Everything is new.
+1. Changed the standard Android logging API to **SLF4J Logging API**
+
+### 1.0.1 - *previous*
+
+1. Fixed **NullPointerException** in **MovingParams**
 
 ### Features in the next versions:
 
@@ -120,6 +124,48 @@ params.setXAxisDelta(xAxisDelta);
 params.setYAxisDelta(yAxisDelta);
 ```
 
+## Logging
+
+To enable logging:
+
+1. Add the following dependency:
+
+	```java
+	dependencies {
+		compile 'com.github.tony19:logback-android-classic:1.1.1-3'
+	}
+	```
+2. Create the **logback.xml** file in the **src/main/assets** with the sample configuration:
+
+	```xml
+	<?xml version="1.0" encoding="UTF-8"?>
+	<configuration>
+		<appender name="LOGCAT" class="ch.qos.logback.classic.android.LogcatAppender">
+			<tagEncoder>
+				<pattern>%logger{0}</pattern>
+			</tagEncoder>
+			<encoder>
+				<pattern>%d{HH:mm:ss.SSS} [%thread] [%logger{0}] - %msg%n</pattern>
+			</encoder>
+		</appender>
+	
+		<root level="TRACE" additivity="false">
+			<appender-ref ref="LOGCAT" />
+		</root>
+	</configuration>
+	```
+	> You may wish to configure different appenders with different log levels for packages, classes etc.
+	
+	> More information about **LOGBack** can be found @ [LOGBack Project Site](http://logback.qos.ch)
+
+3. Add the following **InvalidPackage** ignore rule into **lint.xml** file (located @ the root of the project):
+
+	```xml
+	<issue id="InvalidPackage" >
+    	<ignore path="**/logback-android-core/*" />
+    </issue>
+	```
+
 ## License
 
 ```
@@ -140,6 +186,7 @@ params.setYAxisDelta(yAxisDelta);
 
 ## Shell Software Inc. Links
 
-* [Shell Software Inc. Google+ Official Page](https://plus.google.com/112119444427380215269)
-* <a href="mailto:com.software.shell@gmail.com?subject=[ViewMover]: Proposals And Suggestions">Shell Software Inc. Gmail</a>
+* [Shell Software Inc. Google+ Official Page](https://plus.google.com/+ShellSoftware)
+* [Shell Software Inc. YouTube Official Channel](https://www.youtube.com/c/ShellSoftware)
+* <a href="mailto:com.software.shell@gmail.com?subject=[UI Tools]: Proposals And Suggestions">Shell Software Inc. Gmail</a>
 * [Shell Software Inc. Twitter Official Page](https://twitter.com/shell_software)

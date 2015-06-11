@@ -20,6 +20,8 @@ package com.software.shell.viewmover.movers;
 
 import android.os.Build;
 import android.view.View;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A factory class, which creates view mover instances
@@ -32,18 +34,29 @@ import android.view.View;
 public abstract class ViewMoverFactory {
 
 	/**
-	 * Creates the subclasses of the {@link com.software.shell.viewmover.movers.ViewMover} class
-	 * depending on the {@code BUILD VERSION}
+	 * Logger
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(ViewMoverFactory.class);
+
+	/**
+	 * Creates the {@link ViewMover} subclasses depending on the
+	 * {@code BUILD VERSION}
 	 *
 	 * @param view view to be moved
 	 * @return specific view mover
 	 */
 	public static ViewMover createInstance(View view) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			return new PositionViewMover(view);
+		ViewMover viewMover;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+				&& Build.VERSION.SDK_INT != Build.VERSION_CODES.KITKAT) {   // KitKat is an exclusion
+																			// because of the rendering issues it has
+			viewMover = new PositionViewMover(view);
 		} else {
-			return new MarginViewMover(view);
+			viewMover = new MarginViewMover(view);
 		}
+		LOGGER.trace("Build version code is: {}. {} will be returned",
+				Build.VERSION.SDK_INT, viewMover.getClass().getSimpleName());
+		return viewMover;
 	}
 
 }

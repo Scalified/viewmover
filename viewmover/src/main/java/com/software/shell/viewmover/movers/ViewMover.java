@@ -18,12 +18,13 @@
 
 package com.software.shell.viewmover.movers;
 
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import android.view.animation.TranslateAnimation;
 import com.software.shell.viewmover.configuration.MovingParams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class, which contains the base view movement logic
@@ -37,9 +38,9 @@ import com.software.shell.viewmover.configuration.MovingParams;
 public abstract class ViewMover {
 
 	/**
-	 * Logging tag
+	 * Logger
 	 */
-	private static final String LOG_TAG = String.format("[view-mover][%s]", ViewMover.class.getSimpleName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(ViewMover.class);
 
 	/**
 	 * {@link android.view.View}, which is to be moved
@@ -47,7 +48,7 @@ public abstract class ViewMover {
 	private final View view;
 
 	/**
-	 * Creates an instance of the {@link com.software.shell.viewmover.movers.ViewMover}
+	 * Overrides default constructor
 	 *
 	 * @param view {@link android.view.View}, which is to be moved
 	 */
@@ -137,8 +138,8 @@ public abstract class ViewMover {
 			MovingParams verifiedParams = getVerifiedMovingParams(params);
 			if (isMoveNonZero(verifiedParams)) {
 				final Animation moveAnimation = createAnimation(verifiedParams);
-				Log.v(LOG_TAG, String.format("View is about to be moved at: delta X-axis = %s, delta Y-axis = %s",
-						verifiedParams.getXAxisDelta(), verifiedParams.getYAxisDelta()));
+				LOGGER.trace("View is about to be moved at: delta X-axis = {}, delta Y-axis = {}",
+						verifiedParams.getXAxisDelta(), verifiedParams.getYAxisDelta());
 				view.startAnimation(moveAnimation);
 			}
 		}
@@ -153,7 +154,7 @@ public abstract class ViewMover {
 		Animation previousAnimation = view.getAnimation();
 		boolean previousAnimationCompleted = previousAnimation == null || previousAnimation.hasEnded();
 		if (!previousAnimationCompleted) {
-			Log.w(LOG_TAG, "Unable to move the view. View is being currently moving");
+			LOGGER.warn("Unable to move the view. View is being currently moving");
 		}
 		return previousAnimationCompleted;
 	}
@@ -169,7 +170,7 @@ public abstract class ViewMover {
 		boolean moveNonZero = details.getXAxisDelta() != 0.0f
 				|| details.getYAxisDelta() != 0.0f;
 		if (!moveNonZero) {
-			Log.w(LOG_TAG, "Zero movement detected. No movement will be performed");
+			LOGGER.warn("Zero movement detected. No movement will be performed");
 		}
 		return moveNonZero;
 	}
@@ -186,8 +187,8 @@ public abstract class ViewMover {
 		MovingParams mParams = new MovingParams(params);
 		updateXAxisDelta(mParams);
 		updateYAxisDelta(mParams);
-		Log.v(LOG_TAG, String.format("Updated moving details values: X-axis from %s to %s, Y-axis from %s to %s",
-				params.getXAxisDelta(), mParams.getXAxisDelta(), params.getYAxisDelta(), mParams.getYAxisDelta()));
+		LOGGER.trace("Updated moving details values: X-axis from {} to {}, Y-axis from {} to {}",
+				params.getXAxisDelta(), mParams.getXAxisDelta(), params.getYAxisDelta(), mParams.getYAxisDelta());
 		return mParams;
 	}
 
@@ -199,7 +200,7 @@ public abstract class ViewMover {
 	 */
 	private void updateXAxisDelta(MovingParams details) {
 		if (!hasHorizontalSpaceToMove(details.getXAxisDelta())) {
-			Log.w(LOG_TAG, "Unable to move the view horizontally. No horizontal space left to move");
+			LOGGER.warn("Unable to move the view horizontally. No horizontal space left to move");
 			details.setXAxisDelta(0.0f);
 		}
 	}
@@ -212,7 +213,7 @@ public abstract class ViewMover {
 	 */
 	private void updateYAxisDelta(MovingParams details) {
 		if (!hasVerticalSpaceToMove(details.getYAxisDelta())) {
-			Log.w(LOG_TAG, "Unable to move the view vertically. No vertical space left to move");
+			LOGGER.warn("Unable to move the view vertically. No vertical space left to move");
 			details.setYAxisDelta(0.0f);
 		}
 	}
@@ -229,10 +230,10 @@ public abstract class ViewMover {
 	 */
 	private boolean hasHorizontalSpaceToMove(float xAxisDelta) {
 		int parentWidth = getParentView().getWidth();
-		Log.v(LOG_TAG, "Parent view width is: " + parentWidth);
+		LOGGER.trace("Parent view width is: {}", parentWidth);
 		int endLeftBound = calculateEndLeftBound(xAxisDelta);
 		int endRightBound = calculateEndRightBound(xAxisDelta);
-		Log.v(LOG_TAG, String.format("Calculated end bounds: left = %s, right = %s", endLeftBound, endRightBound));
+		LOGGER.trace("Calculated end bounds: left = {}, right = {}", endLeftBound, endRightBound);
 		return endLeftBound >= 0 && endRightBound <= parentWidth;
 	}
 
@@ -248,10 +249,10 @@ public abstract class ViewMover {
 	 */
 	private boolean hasVerticalSpaceToMove(float yAxisDelta) {
 		int parentHeight = getParentView().getHeight();
-		Log.v(LOG_TAG, "Parent view height is: " + parentHeight);
+		LOGGER.trace("Parent view height is: {}", parentHeight);
 		int endTopBound = calculateEndTopBound(yAxisDelta);
 		int endBottomBound = calculateEndBottomBound(yAxisDelta);
-		Log.v(LOG_TAG, String.format("Calculated end bounds: top = %s, bottom = %s", endTopBound, endBottomBound));
+		LOGGER.trace("Calculated end bounds: top = {}, bottom = {}", endTopBound, endBottomBound);
 		return endTopBound >= 0 && endBottomBound <= parentHeight;
 	}
 

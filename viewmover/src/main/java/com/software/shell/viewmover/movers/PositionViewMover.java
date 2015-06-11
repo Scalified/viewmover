@@ -20,8 +20,9 @@ package com.software.shell.viewmover.movers;
 
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * View mover class, which is used to move the view, based on view's visual position
@@ -36,12 +37,12 @@ import android.view.View;
 class PositionViewMover extends ViewMover {
 
 	/**
-	 * Logging tag
+	 * Logger
 	 */
-	private static final String LOG_TAG = String.format("[view-mover][%s]", PositionViewMover.class.getSimpleName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(PositionViewMover.class);
 
 	/**
-	 * Creates an instance of the {@link com.software.shell.viewmover.movers.PositionViewMover}
+	 * Creates the {@link PositionViewMover} instance
 	 *
 	 * @param view view to be moved
 	 */
@@ -62,8 +63,7 @@ class PositionViewMover extends ViewMover {
 		float endTopBoundPointY = calculateEndTopBound(yAxisDelta);
 		getView().setX(endLeftBoundPointX);
 		getView().setY(endTopBoundPointY);
-		Log.v(LOG_TAG, String.format("Updated view position: left x = %s, top y = %s", endLeftBoundPointX,
-				endTopBoundPointY));
+		LOGGER.trace("Updated view position: leftX = {}, topY = {}", endLeftBoundPointX, endTopBoundPointY);
 	}
 
 	/**

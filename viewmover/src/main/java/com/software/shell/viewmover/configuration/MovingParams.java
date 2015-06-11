@@ -22,6 +22,8 @@ import android.content.Context;
 import android.util.Log;
 import android.view.animation.Interpolator;
 import com.software.shell.uitools.convert.DensityConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Entity class, which contains such moving parameters like
@@ -34,9 +36,9 @@ import com.software.shell.uitools.convert.DensityConverter;
 public class MovingParams {
 
 	/**
-	 * Logging tag
+	 * Logger
 	 */
-	private static final String LOG_TAG = String.format("[view-mover][%s]", MovingParams.class.getSimpleName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(MovingParams.class);
 
 	/**
 	 * Move animation duration, which is used by default
@@ -79,7 +81,7 @@ public class MovingParams {
 	private Interpolator animationInterpolator;
 
 	/**
-	 * Creates and instance of the {@link MovingParams}
+	 * Creates the {@link MovingParams} instance
 	 *
 	 * @param context context the view is running in
 	 * @param xAxisDelta X-axis delta in density-independent pixels.
@@ -98,13 +100,13 @@ public class MovingParams {
 		this.yAxisDelta = dpToPx(yAxisDelta);
 		this.animationDuration = animationDuration;
 		this.animationInterpolator = animationInterpolator;
-		Log.v(LOG_TAG, String.format("Moving params initialized with values: xAxisDelta = %s, yAxisDelta = %s," +
-				"animationDuration = %s, animation interpolator is an instance of %s", getXAxisDelta(),
-				getYAxisDelta(), getAnimationDuration(), getAnimationInterpolator().getClass().getSimpleName()));
+		LOGGER.trace("Moving params initialized with values: xAxisDelta = {}, yAxisDelta = {}, animationDuration = {}" +
+				"animationInterpolator is an instance of {} class", getXAxisDelta(), getYAxisDelta(),
+				getAnimationDuration(), getAnimationInterpolator().getClass().getSimpleName());
 	}
 
 	/**
-	 * Creates and instance of the {@link MovingParams}
+	 * Creates the {@link MovingParams} instance
 	 *
 	 * @param context context the view is running in
 	 * @param xAxisDelta X-axis delta in density-independent pixels.
@@ -120,12 +122,12 @@ public class MovingParams {
 		this.xAxisDelta = dpToPx(xAxisDelta);
 		this.yAxisDelta = dpToPx(yAxisDelta);
 		this.animationDuration = animationDuration;
-		Log.v(LOG_TAG, String.format("Moving params initialized with values: xAxisDelta = %s, yAxisDelta = %s," +
-						"animationDuration = %s", getXAxisDelta(), getYAxisDelta(), getAnimationDuration()));
+		LOGGER.trace("Moving params initialized with values: xAxisDelta = {}, yAxisDelta = {}, animationDuration = {}",
+				getXAxisDelta(), getYAxisDelta(), getAnimationDuration());
 	}
 
 	/**
-	 * Creates and instance of the {@link MovingParams}
+	 * Creates the {@link MovingParams} instance
 	 *
 	 * @param context context the view is running in
 	 * @param xAxisDelta X-axis delta in density-independent pixels.
@@ -139,12 +141,12 @@ public class MovingParams {
 		this.context = context;
 		this.xAxisDelta = dpToPx(xAxisDelta);
 		this.yAxisDelta = dpToPx(yAxisDelta);
-		Log.v(LOG_TAG, String.format("Moving params initialized with values: xAxisDelta = %s, yAxisDelta = %s,",
-				getXAxisDelta(), getYAxisDelta()));
+		LOGGER.trace("Moving params initialized with values: xAxisDelta = {}, yAxisDelta = {}",
+				getXAxisDelta(), getYAxisDelta());
 	}
 
 	/**
-	 * Creates an instance of the {@link MovingParams} by cloning it
+	 * Creates the {@link MovingParams} instance by cloning it
 	 *
 	 * @param params moving params, which cloning is performed of
 	 */
@@ -154,10 +156,10 @@ public class MovingParams {
 		this.yAxisDelta = params.getYAxisDelta();
 		this.animationDuration = params.getAnimationDuration();
 		this.animationInterpolator = params.getAnimationInterpolator();
-		Log.v(LOG_TAG, String.format("Cloned moving params initialized with values: xAxisDelta = %s, yAxisDelta = " +
-						"%s, animationDuration = %s, animation interpolator is an instance of %s", getXAxisDelta(),
-				getYAxisDelta(), getAnimationDuration(), getAnimationInterpolator() == null ?
-						"null" : getAnimationInterpolator().getClass().getSimpleName()));
+		LOGGER.trace("Cloned moving params initialized with values: xAxisDelta = {}, yAxisDelta = {}, " +
+				"animationDuration = {}, animation interpolator is an instance of {} class", getXAxisDelta(),
+				getYAxisDelta(), getAnimationDuration(), getAnimationInterpolator() == null ? "null" :
+						getAnimationInterpolator().getClass().getSimpleName());
 	}
 
 	/**
@@ -185,7 +187,7 @@ public class MovingParams {
 	 */
 	public void setXAxisDelta(float xAxisDelta) {
 		this.xAxisDelta = dpToPx(xAxisDelta);
-		Log.v(LOG_TAG, "Moving Params xAxisDelta set to: " + getXAxisDelta());
+		LOGGER.trace("Moving params xAxisDelta set to: {}", getXAxisDelta());
 	}
 
 	/**
@@ -204,7 +206,7 @@ public class MovingParams {
 	 */
 	public void setYAxisDelta(float yAxisDelta) {
 		this.yAxisDelta = dpToPx(yAxisDelta);
-		Log.v(LOG_TAG, "Moving Params yAxisDelta set to: " + getYAxisDelta());
+		LOGGER.trace("Moving params yAxisDelta set to: {}", getYAxisDelta());
 	}
 
 	/**
