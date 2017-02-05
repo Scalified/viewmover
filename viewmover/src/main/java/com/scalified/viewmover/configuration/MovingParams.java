@@ -17,6 +17,7 @@
 package com.scalified.viewmover.configuration;
 
 import android.content.Context;
+import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import com.scalified.uitools.convert.DensityConverter;
 import org.slf4j.Logger;
@@ -76,6 +77,70 @@ public class MovingParams {
 	 * By default is not set and is {@code null}
 	 */
 	private Interpolator animationInterpolator;
+
+	/**
+	 * Move animation listener
+	 * <p>
+	 * By default is not set and is {@code null}
+	 */
+	private Animation.AnimationListener animationListener;
+
+	/**
+	 * Creates the {@link MovingParams} instance
+	 *
+	 * @param context context the view is running in
+	 * @param xAxisDelta X-axis delta in density-independent pixels.
+	 *                   Positive value means that view is moving right.
+	 *                   Negative value means that view is moving left
+	 * @param yAxisDelta Y-axis delta in density-independent pixels.
+	 *                   Positive value means that view is moving down.
+	 *                   Negative value means that view is moving up
+	 * @param animationDuration move animation duration
+	 * @param animationInterpolator move animation interpolator
+	 * @param animationListener move animation listener
+	 */
+	public MovingParams(Context context, float xAxisDelta, float yAxisDelta, long animationDuration,
+	                    Interpolator animationInterpolator, Animation.AnimationListener animationListener) {
+		this.context = context;
+		this.xAxisDelta = dpToPx(xAxisDelta);
+		this.yAxisDelta = dpToPx(yAxisDelta);
+		this.animationDuration = animationDuration;
+		this.animationInterpolator = animationInterpolator;
+		this.animationListener = animationListener;
+		LOGGER.trace("Moving params initialized with values: xAxisDelta = {}, yAxisDelta = {}, " +
+				"animationDuration = {}, animationInterpolator is an instance of {} class, " +
+				"animationListener is instance of {} class",
+				getXAxisDelta(), getYAxisDelta(), getAnimationDuration(),
+				getAnimationInterpolator().getClass().getSimpleName(),
+				getAnimationListener().getClass().getSimpleName());
+	}
+
+	/**
+	 * Creates the {@link MovingParams} instance
+	 *
+	 * @param context context the view is running in
+	 * @param xAxisDelta X-axis delta in density-independent pixels.
+	 *                   Positive value means that view is moving right.
+	 *                   Negative value means that view is moving left
+	 * @param yAxisDelta Y-axis delta in density-independent pixels.
+	 *                   Positive value means that view is moving down.
+	 *                   Negative value means that view is moving up
+	 * @param animationDuration move animation duration
+	 * @param animationListener move animation listener
+	 */
+	public MovingParams(Context context, float xAxisDelta, float yAxisDelta, long animationDuration,
+	                    Animation.AnimationListener animationListener) {
+		this.context = context;
+		this.xAxisDelta = dpToPx(xAxisDelta);
+		this.yAxisDelta = dpToPx(yAxisDelta);
+		this.animationDuration = animationDuration;
+		this.animationListener = animationListener;
+		LOGGER.trace("Moving params initialized with values: xAxisDelta = {}, yAxisDelta = {}, " +
+						"animationDuration = {}, animationInterpolator is an instance of {} class, " +
+						"animationListener is instance of {} class",
+				getXAxisDelta(), getYAxisDelta(), getAnimationDuration(),
+				getAnimationListener().getClass().getSimpleName());
+	}
 
 	/**
 	 * Creates the {@link MovingParams} instance
@@ -165,7 +230,7 @@ public class MovingParams {
 	 *
 	 * @return context the view is running in
 	 */
-	Context getContext() {
+	private Context getContext() {
 		return context;
 	}
 
@@ -223,6 +288,15 @@ public class MovingParams {
 	 */
 	public Interpolator getAnimationInterpolator() {
 		return animationInterpolator;
+	}
+
+	/**
+	 * Returns move animation listener
+	 *
+	 * @return move animation listener
+	 */
+	public Animation.AnimationListener getAnimationListener() {
+		return animationListener;
 	}
 
 	/**

@@ -284,26 +284,38 @@ public abstract class ViewMover {
 	private class MoveAnimationListener implements Animation.AnimationListener {
 
 		/**
-		 * Moving details
+		 * Moving parameters
 		 */
-		private final MovingParams details;
+		private final MovingParams params;
+
+		/**
+		 * An external animation listener
+		 */
+		private final Animation.AnimationListener animationListener;
 
 		/**
 		 * Creates an instance of the
 		 * {@link com.scalified.viewmover.movers.ViewMover.MoveAnimationListener}
 		 *
-		 * @param details moving details
+		 * @param params moving params
 		 */
-		private MoveAnimationListener(MovingParams details) {
-			this.details = details;
+		private MoveAnimationListener(MovingParams params) {
+			this.params = params;
+			this.animationListener = params.getAnimationListener();
 		}
 
 		@Override
 		public void onAnimationStart(Animation animation) {
+			if (animationListener != null) {
+				animationListener.onAnimationStart(animation);
+			}
 		}
 
 		@Override
 		public void onAnimationRepeat(Animation animation) {
+			if (animationListener != null) {
+				animationListener.onAnimationRepeat(animation);
+			}
 		}
 
 		/**
@@ -316,7 +328,10 @@ public abstract class ViewMover {
 		 */
 		@Override
 		public void onAnimationEnd(Animation animation) {
-			changeViewPosition(details.getXAxisDelta(), details.getYAxisDelta());
+			changeViewPosition(params.getXAxisDelta(), params.getYAxisDelta());
+			if (animationListener != null) {
+				animationListener.onAnimationEnd(animation);
+			}
 		}
 
 	}

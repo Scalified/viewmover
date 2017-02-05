@@ -18,29 +18,16 @@ The Library requires **Android SDK version 9 (Gingerbread)** and higher.
 
 ```java
 dependencies {
-	compile 'com.scalified:viewmover:1.1.1'
+	compile 'com.scalified:viewmover:1.1.2'
 }
 ```
 
 > **View Mover** has a dependency on an external [**UI Tools**](https://github.com/Scalified/uitools) library. 
 If it is used already in the project it must be excluded as a transitive dependency
 
-## Activity Stream
+## Changelog
 
-[**Full ChangeLog**](https://github.com/Scalified/viewmover/blob/master/CHANGELOG.md)
-
-### 1.1.1 - *current*
-
-1. Fixed movement for **KitKat API** (due to rendering issues in **KitKat**)
-2. Changed the standard Android logging API to **SLF4J Logging API**
-
-### 1.0.1 - *previous*
-
-1. Fixed **NullPointerException** in **MovingParams**
-
-### Features in the next versions:
-
-**TBD**
+[**Complete Changelog**](CHANGELOG.md)
 
 ## Usage
 
@@ -78,6 +65,8 @@ mover.move(params);
     Set to **500 ms** by default.
   * **animationInterpolator** - an animation interpolator, which is used to move the view.
     Not set by default.
+  * **animationListener** - an animation listener, which is used to listen view animation events.
+    Not set by default.
     
 > X- and Y-axis deltas are stored in **MovingParams** as actual pixels. When **MovingParams** instance created or when 
 setting X- or Y-axis the density-independent values are converted into real ones.
@@ -91,9 +80,28 @@ int rightDistance = 200.0f;
 int downDistance = 200.0f;
 long animationDuration = 1000;
 Interpolator animationInterpolator = new AccelerateInterpolator();
+Animation.AnimationListener animationListener = new Animation.AnimationListener() {
+    @Override
+    public void onAnimationStart(Animation animation) {
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+    }
+};
 
 // Declare moving parameters
 MovingParams params;
+
+// Create MovingParams object with distances, animation duration, animation interpolator and animation listener
+params = new MovingParams(context, rightDistance, upDistance, animationDuration, animationInterpolator, animationListener);
+
+// Create MovingParams object with distances, animation duration and animation listener
+params = new MovingParams(context, rightDistance, upDistance, animationDuration, animationListener);
 
 // Create MovingParams object with distances, animation duration and animation interpolator
 params = new MovingParams(context, rightDistance, upDistance, animationDuration, animationInterpolator);
